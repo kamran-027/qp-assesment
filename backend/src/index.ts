@@ -1,14 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
+import { adminRouter } from "./admin";
+import { userRouter } from "./user";
 
 const app = express();
-const prisma = new PrismaClient();
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.json({ message: "Working alright check that" });
-});
+app.use("/admin", adminRouter);
+app.use("/user", userRouter);
 
 app.listen(3000, () => {
   console.log(`Listening on port 3000`);
