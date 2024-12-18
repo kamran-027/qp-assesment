@@ -1,10 +1,11 @@
-import { PrismaClient } from "@prisma/client";
-import express from "express";
+import { Item, PrismaClient } from "@prisma/client";
+import { Request, Response, Router } from "express";
+import { buyItemType } from "../models/model";
 
-export const userRouter = express.Router();
+export const userRouter = Router();
 const prisma = new PrismaClient();
 
-userRouter.get("/checkItems", async (req, res) => {
+userRouter.get("/checkItems", async (req: Request, res: Response) => {
   try {
     const allItems = await prisma.item.findMany({
       where: {
@@ -14,21 +15,28 @@ userRouter.get("/checkItems", async (req, res) => {
       },
     });
 
-    res.json({
+    return res.status(200).json({
       items: allItems,
     });
   } catch (error) {
-    res.json({
+    return res.status(500).json({
       error: error,
     });
   }
 });
 
-userRouter.post("/buyItems", async (req, res) => {
+userRouter.post("/buyItems", async (req: Request, res: Response) => {
   const itemsToBuy = req.body;
+  const { success } = buyItemType.safeParse(itemsToBuy);
+
+  if (!success) {
+    return res.status(400).json({
+      message: `Check inputs again`,
+    });
+  }
 
   try {
-    itemsToBuy.map(async (item: any) => {
+    itemsToBuy.map(async (item: Item) => {
       await prisma.item.update({
         where: {
           id: item.id,
@@ -41,11 +49,11 @@ userRouter.post("/buyItems", async (req, res) => {
       });
     });
 
-    res.json({
+    return res.status(201).json({
       message: `Items bought successfully!`,
     });
   } catch (error) {
-    res.json({
+    return res.status(500).json({
       error: error,
     });
   }

@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import express from "express";
 import { adminRouter } from "./admin";
 import { userRouter } from "./user";

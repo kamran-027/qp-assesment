@@ -1,17 +1,19 @@
 import { PrismaClient } from "@prisma/client";
-import express, { Request, Response } from "express";
+import { Request, Response, Router } from "express";
+import { itemInputObject, updateItemObject, updateItemQty, updateParamsId } from "../models/model";
 
-export const adminRouter = express.Router();
+export const adminRouter = Router();
 const prisma = new PrismaClient();
 
-adminRouter.get("/", (req, res) => {
-  res.json({
-    message: "This is admin router",
-  });
-});
-
-adminRouter.post("/addItem", async (req, res) => {
+adminRouter.post("/addItem", async (req: Request, res: Response) => {
   const newItemDetails = req.body;
+  const { success } = itemInputObject.safeParse(newItemDetails);
+
+  if (!success) {
+    return res.status(400).json({
+      message: `Check inputs again`,
+    });
+  }
 
   try {
     const newItem = await prisma.item.create({
@@ -22,52 +24,70 @@ adminRouter.post("/addItem", async (req, res) => {
       },
     });
 
-    res.json({
+    return res.status(201).json({
       message: `${newItemDetails.quantity} units of ${newItem.name} is added to your invertory`,
     });
   } catch (error) {
-    res.json({
+    return res.status(500).json({
       error: `Unable to add item, check error once ${error}`,
     });
   }
 });
 
-adminRouter.get("/getItems", async (req, res) => {
+adminRouter.get("/getItems", async (req: Request, res: Response) => {
   try {
     const allItems = await prisma.item.findMany();
 
-    res.json({
+    return res.status(200).json({
       items: allItems,
     });
   } catch (error) {
-    res.json({
+    return res.status(500).json({
       error: `Error while fetching items ${error}`,
     });
   }
 });
 
-adminRouter.delete("/deleteItem/:id", async (req, res) => {
-  const id = Number(req.params.id);
+adminRouter.delete("/deleteItem/:id", async (req: Request, res: Response) => {
+  const itemId = req.params.id;
+
+  const { success: paramsSucess } = updateParamsId.safeParse(itemId);
+
+  if (!paramsSucess) {
+    return res.status(400).json({
+      message: `Check the params passed`,
+    });
+  }
 
   try {
     await prisma.item.delete({
       where: {
-        id: id,
+        id: Number(itemId),
       },
     });
 
-    res.json({
+    return res.status(200).json({
       message: "Item deleted successfully!",
     });
   } catch (error) {
-    res.json({
+    return res.status(500).json({
       error: `${error}`,
     });
   }
 });
 
-adminRouter.put("/updateItem/:id", async (req, res) => {
+adminRouter.put("/updateItem/:id", async (req: Request, res: Response) => {
   const itemId = req.params.id;
+  const newItemDetails = req.body;
+
+  const { success: paramsSucess } = updateParamsId.safeParse(itemId);
+  const { success: reqBodySucess } = updateItemObject.safeParse(newItemDetails);
+
+  if (!paramsSucess || !reqBodySucess) {
+    return res.status(400).json({
+      message: `Check inputs or params passed`,
+    });
+  }
 
   try {
     const udpatedItem = await prisma.item.update({
@@ -75,28 +95,36 @@ adminRouter.put("/updateItem/:id", async (req, res) => {
         id: Number(itemId),
       },
       data: {
-        name: req.body.name,
-        price: req.body.price,
+        name: newItemDetails.name,
+        price: newItemDetails.price,
       },
     });
 
-    res.json({
+    return res.status(201).json({
       message: `${udpatedItem.name} is updated`,
     });
   } catch (error) {
-    res.json({
+    return res.status(500).json({
       error: `${error}`,
     });
   }
 });
 
-adminRouter.put("/updateQuantity/:id", async (req, res) => {
+adminRouter.put("/updateQuantity/:id", async (req: Request, res: Response) => {
   const itemId = req.params.id;
-
   const newQuantity = req.body.quantity;
 
+  const { success: paramsSucess } = updateParamsId.safeParse(itemId);
+  const { success: reqBodySucess } = updateItemQty.safeParse(newQuantity);
+
+  if (!paramsSucess || !reqBodySucess) {
+    return res.status(400).json({
+      message: `Check inputs or params passed`,
+    });
+  }
+
   if (newQuantity <= 0) {
-    res.json({
+    return res.status(400).json({
       message: `Atleast add a single quantity to inventory`,
     });
   }
@@ -117,11 +145,11 @@ adminRouter.put("/updateQuantity/:id", async (req, res) => {
       },
     });
 
-    res.json({
+    return res.status(201).json({
       message: `Updated count for ${updatedItem.name} is ${updatedItem.quantity}`,
     });
   } catch (error) {
-    res.json({
+    return res.status(500).json({
       error: `Error while updating quanity, check error once ${error}`,
     });
   }
