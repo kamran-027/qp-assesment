@@ -6,8 +6,6 @@ export const itemInputObject = zod.object({
   quantity: zod.number(),
 });
 
-export const updateParamsId = zod.number();
-
 export const updateItemObject = zod.object({
   name: zod.string(),
   price: zod.number(),

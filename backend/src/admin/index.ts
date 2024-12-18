@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, Router } from "express";
-import { itemInputObject, updateItemObject, updateItemQty, updateParamsId } from "../models/model";
+import { itemInputObject, updateItemObject, updateItemQty } from "../models/model";
 
 export const adminRouter = Router();
 const prisma = new PrismaClient();
@@ -51,15 +51,19 @@ adminRouter.get("/getItems", async (req: Request, res: Response) => {
 adminRouter.delete("/deleteItem/:id", async (req: Request, res: Response) => {
   const itemId = req.params.id;
 
-  const { success: paramsSucess } = updateParamsId.safeParse(itemId);
-
-  if (!paramsSucess) {
-    return res.status(400).json({
-      message: `Check the params passed`,
-    });
-  }
-
   try {
+    const existingItem = await prisma.item.findFirst({
+      where: {
+        id: Number(itemId),
+      },
+    });
+
+    if (!existingItem) {
+      return res.status(400).json({
+        message: `Item does not exist`,
+      });
+    }
+
     await prisma.item.delete({
       where: {
         id: Number(itemId),
@@ -80,16 +84,27 @@ adminRouter.put("/updateItem/:id", async (req: Request, res: Response) => {
   const itemId = req.params.id;
   const newItemDetails = req.body;
 
-  const { success: paramsSucess } = updateParamsId.safeParse(itemId);
   const { success: reqBodySucess } = updateItemObject.safeParse(newItemDetails);
 
-  if (!paramsSucess || !reqBodySucess) {
+  if (!reqBodySucess) {
     return res.status(400).json({
       message: `Check inputs or params passed`,
     });
   }
 
   try {
+    const existingItem = await prisma.item.findFirst({
+      where: {
+        id: Number(itemId),
+      },
+    });
+
+    if (!existingItem) {
+      return res.status(400).json({
+        message: `Item does not exist`,
+      });
+    }
+
     const udpatedItem = await prisma.item.update({
       where: {
         id: Number(itemId),
@@ -100,7 +115,7 @@ adminRouter.put("/updateItem/:id", async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(201).json({
+    return res.status(204).json({
       message: `${udpatedItem.name} is updated`,
     });
   } catch (error) {
@@ -112,12 +127,13 @@ adminRouter.put("/updateItem/:id", async (req: Request, res: Response) => {
 
 adminRouter.put("/updateQuantity/:id", async (req: Request, res: Response) => {
   const itemId = req.params.id;
-  const newQuantity = req.body.quantity;
+  const newQuantity = req.body;
 
-  const { success: paramsSucess } = updateParamsId.safeParse(itemId);
+  console.log(newQuantity);
+
   const { success: reqBodySucess } = updateItemQty.safeParse(newQuantity);
 
-  if (!paramsSucess || !reqBodySucess) {
+  if (!reqBodySucess) {
     return res.status(400).json({
       message: `Check inputs or params passed`,
     });
@@ -145,7 +161,7 @@ adminRouter.put("/updateQuantity/:id", async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(201).json({
+    return res.status(204).json({
       message: `Updated count for ${updatedItem.name} is ${updatedItem.quantity}`,
     });
   } catch (error) {
