@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import express from "express";
+import express, { Request, Response } from "express";
 
-export const adminRouter = express();
+export const adminRouter = express.Router();
 const prisma = new PrismaClient();
 
 adminRouter.get("/", (req, res) => {
@@ -90,8 +90,16 @@ adminRouter.put("/updateItem/:id", async (req, res) => {
   }
 });
 
-adminRouter.put("/updatedQuantity/:id", async (req, res) => {
+adminRouter.put("/updateQuantity/:id", async (req, res) => {
   const itemId = req.params.id;
+
+  const newQuantity = req.body.quantity;
+
+  if (newQuantity <= 0) {
+    res.json({
+      message: `Atleast add a single quantity to inventory`,
+    });
+  }
 
   try {
     const updatedItem = await prisma.item.update({
@@ -99,7 +107,9 @@ adminRouter.put("/updatedQuantity/:id", async (req, res) => {
         id: Number(itemId),
       },
       data: {
-        quantity: req.body.quantity,
+        quantity: {
+          increment: Number(req.body.quantity),
+        },
       },
       select: {
         quantity: true,
@@ -112,7 +122,7 @@ adminRouter.put("/updatedQuantity/:id", async (req, res) => {
     });
   } catch (error) {
     res.json({
-      error: `Erro while updating quanity, check error once ${error}`,
+      error: `Error while updating quanity, check error once ${error}`,
     });
   }
 });
