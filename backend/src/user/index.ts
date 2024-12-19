@@ -36,18 +36,14 @@ userRouter.post("/buyItems", async (req: Request, res: Response) => {
   }
 
   try {
-    itemsToBuy.map(async (item: Item) => {
-      await prisma.item.update({
-        where: {
-          id: item.id,
-        },
-        data: {
-          quantity: {
-            decrement: Number(item.quantity),
-          },
-        },
-      });
-    });
+    await Promise.all(
+      itemsToBuy.map((item: Item) =>
+        prisma.item.update({
+          where: { id: item.id },
+          data: { quantity: { decrement: item.quantity } },
+        })
+      )
+    );
 
     return res.status(200).json({
       message: `Items bought successfully!`,
