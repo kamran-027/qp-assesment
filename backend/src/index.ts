@@ -9,7 +9,11 @@ app.use(express.json());
 
 app.use("/admin", adminRouter);
 app.use("/user", userRouter);
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.listen(3000, () => {
   console.log(`Listening on port 3000`);
