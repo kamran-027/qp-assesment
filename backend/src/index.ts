@@ -11,7 +11,8 @@ app.use("/admin", adminRouter);
 app.use("/user", userRouter);
 app.use(
   cors({
-    origin: "*",
+    origin: ["http://localhost:5174"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
