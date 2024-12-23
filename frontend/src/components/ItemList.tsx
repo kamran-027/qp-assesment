@@ -1,19 +1,28 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Item } from "../../../backend/src/models/model";
+import ItemCard from "./ItemCard";
 
 const ItemList = () => {
+  const [itemList, setItemList] = useState<Item[]>();
+
   const getItems = async () => {
-    const resp = axios.get(
+    const resp = await axios.get(
       "http://grocery-backend.kamrankhanblog.net:3000/user/checkItems"
     );
-    console.log((await resp).data);
+    console.log(resp.data.items);
+    setItemList(resp.data.items);
   };
 
   useEffect(() => {
     getItems();
   }, []);
 
-  return <div>ItemList</div>;
+  return (
+    <div className=" inline-flex h-full p-5 gap-3">
+      {itemList && itemList.map((item: Item) => <ItemCard item={item} />)}
+    </div>
+  );
 };
 
 export default ItemList;

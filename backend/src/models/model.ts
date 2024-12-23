@@ -17,7 +17,7 @@ export const updateItemQty = zod.object({
 
 export const buyItemType = zod.array(
   zod.object({
-    id: zod.number(),
+    name: zod.string(),
     quantity: zod.number(),
   })
 );

@@ -39,7 +39,9 @@ userRouter.post("/buyItems", async (req: Request, res: Response) => {
     await Promise.all(
       itemsToBuy.map((item: Item) =>
         prisma.item.update({
-          where: { id: item.id },
+          where: {
+            name: item.name,
+          },
           data: { quantity: { decrement: item.quantity } },
         })
       )
