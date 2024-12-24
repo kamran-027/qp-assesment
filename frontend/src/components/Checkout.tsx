@@ -14,10 +14,13 @@ import { Item } from "../../../backend/src/models/model";
 import ItemTotal from "./ItemTotal";
 import { useEffect, useState } from "react";
 import { Label } from "./ui/label";
+import axios from "axios";
+import { toast } from "sonner";
 
 const Checkout = () => {
   const [itemsCart, setItemCart] = useRecoilState<Item[]>(itemCartAtom);
   const [isCartEmpty, setIsCartEmpty] = useState<boolean>(false);
+  const [isCheckoutCartOpen, setsCheckoutCartOpen] = useState<boolean>(false);
 
   const removeItems = () => {
     setItemCart([]);
@@ -27,11 +30,22 @@ const Checkout = () => {
     setIsCartEmpty(itemsCart.length === 0);
   }, [itemsCart]);
 
+  const buyItem = async () => {
+    await axios.post(
+      "http://grocery-backend.kamrankhanblog.net:3000/admin/addItem",
+      itemsCart
+    );
+    setsCheckoutCartOpen(false);
+    toast("Item bought Sucessfully!", { position: "top-center" });
+  };
+
   return (
     <div>
-      <Dialog>
+      <Dialog open={isCheckoutCartOpen}>
         <DialogTrigger asChild>
-          <Button variant="default">Checkout</Button>
+          <Button variant="default" onClick={() => setsCheckoutCartOpen(true)}>
+            Checkout
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -60,7 +74,9 @@ const Checkout = () => {
               <Button type="button" variant={"outline"} onClick={removeItems}>
                 Remove Items
               </Button>
-              <Button type="submit">Submit</Button>
+              <Button type="submit" onClick={buyItem}>
+                Buy
+              </Button>
             </div>
           </DialogFooter>
         </DialogContent>

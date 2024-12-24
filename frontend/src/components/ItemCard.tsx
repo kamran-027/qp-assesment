@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Label } from "./ui/label";
+import { toast } from "sonner";
 
 interface Props {
   item: Item;
@@ -36,16 +37,16 @@ const ItemCard = ({ item, addItem }: Props) => {
       <CardContent>
         <div className="flex flex-col gap-y-4 items-start justify-start">
           <div>
-            <Label>Name: </Label>
-            {item.name}
+            <Label className="font-semibold">Name: </Label>{" "}
+            <span>{item.name}</span>
           </div>
           <div>
-            <Label>Price: </Label>
-            {item.price}
+            <Label className="font-semibold">Price: </Label>{" "}
+            <span>{item.price}</span>
           </div>
           <div>
-            <Label>Available QTY: </Label>
-            {item.quantity}
+            <Label className="font-semibold">Available QTY: </Label>{" "}
+            <span>{item.quantity}</span>
           </div>
         </div>
       </CardContent>
@@ -58,7 +59,11 @@ const ItemCard = ({ item, addItem }: Props) => {
               price: item.price,
             };
             addItem(buyItem);
+            toast("Item added to your cart!", {
+              position: "top-center",
+            });
           }}
+          disabled={currentCount === 0}
         >
           Add
         </Button>
