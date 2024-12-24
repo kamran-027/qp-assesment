@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, Router } from "express";
-import { itemInputObject, updateItemObject, updateItemQty } from "../models/model";
+import {
+  itemInputObject,
+  updateItemObject,
+  updateItemQty,
+} from "../models/model";
 
 export const adminRouter = Router();
 const prisma = new PrismaClient();
@@ -128,8 +132,6 @@ adminRouter.put("/updateItem/:id", async (req: Request, res: Response) => {
 adminRouter.put("/updateQuantity/:id", async (req: Request, res: Response) => {
   const itemId = req.params.id;
   const newQuantity = req.body;
-
-  console.log(newQuantity);
 
   const { success: reqBodySucess } = updateItemQty.safeParse(newQuantity);
 

@@ -12,9 +12,10 @@ import { Label } from "./ui/label";
 
 interface Props {
   item: Item;
+  addItem: (item: Item) => void;
 }
 
-const ItemCard = ({ item }: Props) => {
+const ItemCard = ({ item, addItem }: Props) => {
   const [currentCount, SetCurrentCount] = useState<number>(0);
 
   const incrementCount = () => {
@@ -49,7 +50,18 @@ const ItemCard = ({ item }: Props) => {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button>Add</Button>
+        <Button
+          onClick={() => {
+            const buyItem: Item = {
+              name: item.name,
+              quantity: currentCount,
+              price: item.price,
+            };
+            addItem(buyItem);
+          }}
+        >
+          Add
+        </Button>
         <div>
           <Button size={"sm"} variant={"ghost"} onClick={decerementCount}>
             -

@@ -1,6 +1,6 @@
 import { Item, PrismaClient } from "@prisma/client";
 import { Request, Response, Router } from "express";
-import { buyItemType } from "../models/model";
+import { buyItemType, itemInputObject } from "../models/model";
 
 export const userRouter = Router();
 const prisma = new PrismaClient();
@@ -27,7 +27,7 @@ userRouter.get("/checkItems", async (req: Request, res: Response) => {
 
 userRouter.post("/buyItems", async (req: Request, res: Response) => {
   const itemsToBuy = req.body;
-  const { success } = buyItemType.safeParse(itemsToBuy);
+  const { success } = itemInputObject.safeParse(itemsToBuy);
 
   if (!success) {
     return res.status(400).json({
