@@ -20,7 +20,7 @@ import { toast } from "sonner";
 const Checkout = () => {
   const [itemsCart, setItemCart] = useRecoilState<Item[]>(itemCartAtom);
   const [isCartEmpty, setIsCartEmpty] = useState<boolean>(false);
-  const [isCheckoutCartOpen, setsCheckoutCartOpen] = useState<boolean>(false);
+  const [isCheckoutCartOpen, setIsCheckoutCartOpen] = useState<boolean>(false);
 
   const removeItems = () => {
     setItemCart([]);
@@ -32,18 +32,18 @@ const Checkout = () => {
 
   const buyItem = async () => {
     await axios.post(
-      "http://grocery-backend.kamrankhanblog.net:3000/admin/addItem",
+      "http://grocery-backend.kamrankhanblog.net:3000/user/buyItems",
       itemsCart
     );
-    setsCheckoutCartOpen(false);
+    setIsCheckoutCartOpen(false);
     toast("Item bought Sucessfully!", { position: "top-center" });
   };
 
   return (
     <div>
-      <Dialog open={isCheckoutCartOpen}>
+      <Dialog open={isCheckoutCartOpen} onOpenChange={setIsCheckoutCartOpen}>
         <DialogTrigger asChild>
-          <Button variant="default" onClick={() => setsCheckoutCartOpen(true)}>
+          <Button variant="default" onClick={() => setIsCheckoutCartOpen(true)}>
             Checkout
           </Button>
         </DialogTrigger>
