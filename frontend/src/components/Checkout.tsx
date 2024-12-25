@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { itemCartAtom } from "@/atom/atom";
+import { itemCartAtom, items } from "@/atom/atom";
 import { Item } from "../../../backend/src/models/model";
 import ItemTotal from "./ItemTotal";
 import { useEffect, useState } from "react";
@@ -19,11 +19,20 @@ import { toast } from "sonner";
 
 const Checkout = () => {
   const [itemsCart, setItemCart] = useRecoilState<Item[]>(itemCartAtom);
+  const [_, setItemList] = useRecoilState<Item[]>(items);
   const [isCartEmpty, setIsCartEmpty] = useState<boolean>(false);
   const [isCheckoutCartOpen, setIsCheckoutCartOpen] = useState<boolean>(false);
 
   const removeItems = () => {
     setItemCart([]);
+  };
+
+  const getItems = async () => {
+    const resp = await axios.get(
+      "http://grocery-backend.kamrankhanblog.net:3000/user/checkItems"
+    );
+
+    setItemList(resp.data.items);
   };
 
   useEffect(() => {
@@ -37,6 +46,7 @@ const Checkout = () => {
     );
     setIsCheckoutCartOpen(false);
     toast("Item bought Sucessfully!", { position: "top-center" });
+    getItems();
   };
 
   return (

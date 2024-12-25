@@ -1,12 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Item } from "../../../backend/src/models/model";
 import ItemCard from "./ItemCard";
 import { useRecoilState } from "recoil";
-import { itemCartAtom } from "@/atom/atom";
+import { itemCartAtom, items } from "@/atom/atom";
 
 const ItemList = () => {
-  const [itemList, setItemList] = useState<Item[]>();
+  const [itemList, setItemList] = useRecoilState<Item[]>(items);
   const [_, setItemCart] = useRecoilState<Item[]>(itemCartAtom);
 
   const getItems = async () => {
