@@ -9,10 +9,10 @@ function App() {
       <div className="h-16">
         <Appbar />
       </div>
-      <div className="h-[36.5rem]">
+      <div className="h-[36.5rem] bg-[#DAE2B6]">
         <ItemList />
       </div>
-      <div className="h-10">
+      <div className="h-15 bg-[#DAE2B6]">
         <Footer />
       </div>
     </div>

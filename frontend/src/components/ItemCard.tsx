@@ -28,7 +28,7 @@ const ItemCard = ({ item, addItem }: Props) => {
   };
 
   return (
-    <Card className="w-48 h-60">
+    <Card className="w-48 h-60 bg-[#FFF4C9]">
       <CardHeader>
         <CardTitle className="text-center">
           {item.name.toLocaleUpperCase()}

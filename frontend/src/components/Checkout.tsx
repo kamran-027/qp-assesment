@@ -57,7 +57,7 @@ const Checkout = () => {
             Checkout
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] bg-[#FFF4C9]">
           <DialogHeader>
             <DialogTitle>Item Cart</DialogTitle>
             <DialogDescription>Check list of items to buy</DialogDescription>
@@ -81,7 +81,12 @@ const Checkout = () => {
                 isCartEmpty ? "hidden" : "block"
               }`}
             >
-              <Button type="button" variant={"outline"} onClick={removeItems}>
+              <Button
+                type="button"
+                variant={"outline"}
+                onClick={removeItems}
+                className="bg-[#FFF4C9]"
+              >
                 Remove Items
               </Button>
               <Button type="submit" onClick={buyItem}>
