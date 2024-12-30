@@ -10,9 +10,7 @@ const ItemList = () => {
   const [_, setItemCart] = useRecoilState<Item[]>(itemCartAtom);
 
   const getItems = async () => {
-    const resp = await axios.get(
-      "http://grocery-backend.kamrankhanblog.net:3000/user/checkItems"
-    );
+    const resp = await axios.get("http://grocery-app.kamrankhanblog.net:3000/user/checkItems");
 
     setItemList(resp.data.items);
   };
@@ -27,10 +25,7 @@ const ItemList = () => {
 
   return (
     <div className=" inline-flex h-full p-5 gap-3">
-      {itemList &&
-        itemList.map((item: Item) => (
-          <ItemCard item={item} addItem={addItemToCart} />
-        ))}
+      {itemList && itemList.map((item: Item) => <ItemCard item={item} addItem={addItemToCart} />)}
     </div>
   );
 };

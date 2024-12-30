@@ -1,14 +1,6 @@
 import { useRecoilState } from "recoil";
 import { Button } from "./ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { itemCartAtom, items } from "@/atom/atom";
 import { Item } from "../../../backend/src/models/model";
 import ItemTotal from "./ItemTotal";
@@ -28,9 +20,7 @@ const Checkout = () => {
   };
 
   const getItems = async () => {
-    const resp = await axios.get(
-      "http://grocery-backend.kamrankhanblog.net:3000/user/checkItems"
-    );
+    const resp = await axios.get("http://grocery-app.kamrankhanblog.net:3000/user/checkItems");
 
     setItemList(resp.data.items);
   };
@@ -40,10 +30,7 @@ const Checkout = () => {
   }, [itemsCart]);
 
   const buyItem = async () => {
-    await axios.post(
-      "http://grocery-backend.kamrankhanblog.net:3000/user/buyItems",
-      itemsCart
-    );
+    await axios.post("http://grocery-app.kamrankhanblog.net:3000/user/buyItems", itemsCart);
     setIsCheckoutCartOpen(false);
     toast("Item bought Sucessfully!", { position: "top-center" });
     getItems();
@@ -76,17 +63,8 @@ const Checkout = () => {
             )}
           </div>
           <DialogFooter>
-            <div
-              className={`flex justify-between w-full ${
-                isCartEmpty ? "hidden" : "block"
-              }`}
-            >
-              <Button
-                type="button"
-                variant={"outline"}
-                onClick={removeItems}
-                className="bg-[#FFF4C9]"
-              >
+            <div className={`flex justify-between w-full ${isCartEmpty ? "hidden" : "block"}`}>
+              <Button type="button" variant={"outline"} onClick={removeItems} className="bg-[#FFF4C9]">
                 Remove Items
               </Button>
               <Button type="submit" onClick={buyItem}>
