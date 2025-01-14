@@ -20,7 +20,7 @@ const Checkout = () => {
   };
 
   const getItems = async () => {
-    const resp = await axios.get("http://grocery-app.kamrankhanblog.net:3000/user/checkItems");
+    const resp = await axios.get("https://grocery-backend.kamrankhanblog.net/user/checkItems");
 
     setItemList(resp.data.items);
   };
@@ -30,7 +30,7 @@ const Checkout = () => {
   }, [itemsCart]);
 
   const buyItem = async () => {
-    await axios.post("http://grocery-app.kamrankhanblog.net:3000/user/buyItems", itemsCart);
+    await axios.post("https://grocery-backend.kamrankhanblog.net/user/buyItems", itemsCart);
     setIsCheckoutCartOpen(false);
     toast("Item bought Sucessfully!", { position: "top-center" });
     getItems();

@@ -10,7 +10,7 @@ const ItemList = () => {
   const [_, setItemCart] = useRecoilState<Item[]>(itemCartAtom);
 
   const getItems = async () => {
-    const resp = await axios.get("http://grocery-app.kamrankhanblog.net:3000/user/checkItems");
+    const resp = await axios.get("https://grocery-backend.kamrankhanblog.net/user/checkItems");
 
     setItemList(resp.data.items);
   };
